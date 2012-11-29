@@ -1,0 +1,14 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<archetype xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype/${version}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype/${version} http://maven.apache.org/xsd/archetype-${version}.xsd">
+  <id>${artifactId}</id>
+  <allowPartial>true</allowPartial>
+  <sources>
+    <source>src/main/java/App.java</source>
+  </sources>
+  <testSources>
+    <source>src/test/java/AppTest.java</source>
+  </testSources>
+</archetype>
