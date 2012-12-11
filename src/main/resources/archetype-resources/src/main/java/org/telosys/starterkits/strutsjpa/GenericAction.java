@@ -1,6 +1,3 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
 package org.telosys.starterkits.strutsjpa;
 
 import java.util.List;
@@ -24,10 +21,11 @@ public abstract class GenericAction<T, PK> extends ActionSupport
 	
 	protected final Logger LOG = LoggerFactory.getLogger(GenericAction.class);
 	
-	protected T current = null ;
 	protected PK restid = null;
 	protected List<T> searchResult = null ;
-
+	protected abstract IServices<T, PK> getServices();
+	protected abstract T getInnerCurrent();
+	protected abstract void setInnerCurrent(T t);
 
 	@Override
 	public void validate() {
@@ -48,12 +46,6 @@ public abstract class GenericAction<T, PK> extends ActionSupport
 	}
 
 	/**
-	 * Get Services
-	 * @return Services
-	 */
-	protected abstract IServices<T, PK> getServices();
-
-	/**
 	 * Get restid
 	 * @return restid
 	 */
@@ -69,24 +61,6 @@ public abstract class GenericAction<T, PK> extends ActionSupport
 	public void setRestid(final PK id) {
 		if (LOG.isDebugEnabled()) LOG.debug("setRestid");
 		this.restid = id;
-	}
-
-	/**
-	 * Get current entity
-	 * @return current entity
-	 */
-	public T getCurrent() {
-		if (LOG.isDebugEnabled()) LOG.debug("getCurrent");
-		return current;
-	}
-
-	/**
-	 * Set current entity
-	 * @param current entity
-	 */
-	public void setCurrent(final T current) {
-		if (LOG.isDebugEnabled()) LOG.debug("setCurrent");
-		this.current = current;
 	}
 
 	/**
@@ -132,11 +106,11 @@ public abstract class GenericAction<T, PK> extends ActionSupport
 	public String save() throws Exception {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Method 'save'");
-			LOG.debug("Form values : " + current );
+			LOG.debug("Form values : " + this.getInnerCurrent() );
 		}
 
-		if (current != null) {
-			this.current = getServices().save(current);
+		if (getInnerCurrent() != null) {
+			this.setInnerCurrent(getServices().save(this.getInnerCurrent()));
 			addActionMessage(getText("entity.save"));
 		} else {
 			addActionError(getText("entity.nothing.to.save"));
@@ -152,10 +126,10 @@ public abstract class GenericAction<T, PK> extends ActionSupport
 	public String search() throws Exception {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Method 'search'");
-			LOG.debug("Form values : " + current );
+			LOG.debug("Form values : " + this.getInnerCurrent() );
 		}
 		
-		searchResult = getServices().search( current );
+		searchResult = getServices().search( this.getInnerCurrent() );
 		if (LOG.isDebugEnabled()) LOG.debug("After SEARCH : count = " + searchResult.size() );
 		if ( searchResult.size() > 1 ) {
 			final String[] args = {Integer.toString(searchResult.size())};
@@ -164,7 +138,7 @@ public abstract class GenericAction<T, PK> extends ActionSupport
 			return RESULT_LIST ;
 		}
 		else if ( searchResult.size() == 1 ) {
-			current = searchResult.get(0);
+			this.setInnerCurrent(searchResult.get(0));
 			addActionMessage(getText("entity.found.one"));
 			return RESULT_FORM ;
 		}
@@ -180,7 +154,7 @@ public abstract class GenericAction<T, PK> extends ActionSupport
 	 */
 	public String clear() {
 		if (LOG.isDebugEnabled()) LOG.debug("Method 'clear'");
-		this.current = null;
+		this.setInnerCurrent(null);
 		this.restid = null;
 		this.searchResult = null;
 		return RESULT_FORM ;
@@ -191,13 +165,12 @@ public abstract class GenericAction<T, PK> extends ActionSupport
 	 * @throws Exception
 	 */
 	protected void innerload() throws Exception {
-		this.current = getServices().load(restid);
-		if ( this.current != null ) {
+		this.setInnerCurrent(getServices().load(restid));
+		if ( this.getInnerCurrent() != null ) {
 			addActionMessage(getText("entity.found"));
 		} else {
 			addActionError(getText("entity.not.found"));
 		}
 	}
-
 
 }

@@ -1,10 +1,8 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
 package org.telosys.starterkits.strutsjpa;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,8 +13,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.FileManager;
+import com.opensymphony.xwork2.FileManagerFactory;
 import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.util.FileManager;
+import com.opensymphony.xwork2.util.ClassLoaderUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
@@ -32,7 +32,6 @@ import com.opensymphony.xwork2.validator.ValidatorContext;
 import com.opensymphony.xwork2.validator.ValidatorFactory;
 import com.opensymphony.xwork2.validator.ValidatorFileParser;
 import com.opensymphony.xwork2.validator.validators.VisitorFieldValidator;
-
 
 /**
  * Copy the classe below and Change only the private method : private List<ValidatorConfig> buildAliasValidatorConfigs(Class aClass, String context, boolean checkFile)
@@ -51,26 +50,32 @@ public class CustomActionValidatorManager implements ActionValidatorManager {
     private final Logger LOG = LoggerFactory.getLogger(DefaultActionValidatorManager.class);
     private ValidatorFactory validatorFactory;
     private ValidatorFileParser validatorFileParser;
+    private FileManager fileManager;
 
     @Inject
-    public void setValidatorFileParser(final ValidatorFileParser parser) {
+    public void setValidatorFileParser(ValidatorFileParser parser) {
         this.validatorFileParser = parser;
     }
     
     @Inject
-    public void setValidatorFactory(final ValidatorFactory fac) {
+    public void setValidatorFactory(ValidatorFactory fac) {
         this.validatorFactory = fac;
     }
 
-    public synchronized List<Validator> getValidators(final Class clazz, final String context) {
+    @Inject
+    public void setFileManagerFactory(FileManagerFactory fileManagerFactory) {
+        this.fileManager = fileManagerFactory.getFileManager();
+    }
+
+    public synchronized List<Validator> getValidators(Class clazz, String context) {
         return getValidators(clazz, context, null);
     }
 
-    public synchronized List<Validator> getValidators(final Class clazz, final String context, final String method) {
+    public synchronized List<Validator> getValidators(Class clazz, String context, String method) {
         final String validatorKey = buildValidatorKey(clazz, context);
 
         if (validatorCache.containsKey(validatorKey)) {
-            if (FileManager.isReloadingConfigs()) {
+            if (fileManager.isReloadingConfigs()) {
                 validatorCache.put(validatorKey, buildValidatorConfigs(clazz, context, true, null));
             }
         } else {
@@ -94,20 +99,20 @@ public class CustomActionValidatorManager implements ActionValidatorManager {
         return validators;
     }
 
-    public void validate(final Object object, final String context) throws ValidationException {
+    public void validate(Object object, String context) throws ValidationException {
         validate(object, context, (String) null);
     }
 
-    public void validate(final Object object, final String context, final String method) throws ValidationException {
+    public void validate(Object object, String context, String method) throws ValidationException {
         ValidatorContext validatorContext = new DelegatingValidatorContext(object);
         validate(object, context, validatorContext, method);
     }
 
-    public void validate(final Object object, final String context, final ValidatorContext validatorContext) throws ValidationException {
+    public void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException {
         validate(object, context, validatorContext, null);
     }
 
-    public void validate(final Object object, final String context, final ValidatorContext validatorContext, final String method) throws ValidationException {
+    public void validate(Object object, String context, ValidatorContext validatorContext, String method) throws ValidationException {
         List<Validator> validators = getValidators(object.getClass(), context, method);
         Set<String> shortcircuitedFields = null;
 
@@ -210,20 +215,20 @@ public class CustomActionValidatorManager implements ActionValidatorManager {
      * @param context the action's context.
      * @return a validator key which is the class name plus context.
      */
-    protected static String buildValidatorKey(final Class clazz, final String context) {
+    protected static String buildValidatorKey(Class clazz, String context) {
         StringBuilder sb = new StringBuilder(clazz.getName());
         sb.append("/");
         sb.append(context);
         return sb.toString();
     }
 
-    private List<ValidatorConfig> buildAliasValidatorConfigs(final Class aClass, final String context, final boolean checkFile) {
+    private List<ValidatorConfig> buildAliasValidatorConfigs(Class aClass, String context, boolean checkFile) {
     	String fileName = aClass.getName().replace('.', '/') + "-" + context.replace('/', '-') + VALIDATION_CONFIG_SUFFIX;
     	fileName = fileName.replace("--", "-");
         return loadFile(fileName, aClass, checkFile);
     }
 
-    private List<ValidatorConfig> buildClassValidatorConfigs(final Class aClass, final boolean checkFile) {
+    private List<ValidatorConfig> buildClassValidatorConfigs(Class aClass, boolean checkFile) {
         String fileName = aClass.getName().replace('.', '/') + VALIDATION_CONFIG_SUFFIX;
 
         return loadFile(fileName, aClass, checkFile);
@@ -271,7 +276,7 @@ public class CustomActionValidatorManager implements ActionValidatorManager {
      * @param checked the set of previously checked class-contexts, null if none have been checked
      * @return a list of validator configs for the given class and context.
      */
-    private List<ValidatorConfig> buildValidatorConfigs(final Class clazz, final String context, final boolean checkFile, Set<String> checked) {
+    private List<ValidatorConfig> buildValidatorConfigs(Class clazz, String context, boolean checkFile, Set<String> checked) {
         List<ValidatorConfig> validatorConfigs = new ArrayList<ValidatorConfig>();
 
         if (checked == null) {
@@ -316,13 +321,14 @@ public class CustomActionValidatorManager implements ActionValidatorManager {
         return validatorConfigs;
     }
 
-    private List<ValidatorConfig> loadFile(final String fileName, final Class clazz, final boolean checkFile) {
+    private List<ValidatorConfig> loadFile(String fileName, Class clazz, boolean checkFile) {
         List<ValidatorConfig> retList = Collections.emptyList();
-        if ((checkFile && FileManager.fileNeedsReloading(fileName, clazz)) || !validatorFileCache.containsKey(fileName)) {
+        URL fileUrl = ClassLoaderUtil.getResource(fileName, clazz);
+        if ((checkFile && fileUrl != null && fileManager.fileNeedsReloading(fileUrl.toString())) || !validatorFileCache.containsKey(fileName)) {
             InputStream is = null;
 
             try {
-                is = FileManager.loadFile(fileName, clazz);
+                is = fileManager.loadFile(fileUrl);
 
                 if (is != null) {
                     retList = new ArrayList<ValidatorConfig>(validatorFileParser.parseActionValidatorConfigs(validatorFactory, is, fileName));
@@ -349,11 +355,11 @@ public class CustomActionValidatorManager implements ActionValidatorManager {
     /**
      * An {@link com.opensymphony.xwork2.validator.ValidatorContext} wrapper that
      * returns the full field name
-     * {@link InternalValidatorContextWrapper${symbol_pound}getFullFieldName(String)}
+     * {@link InternalValidatorContextWrapper#getFullFieldName(String)}
      * by consulting it's parent if its an {@link com.opensymphony.xwork2.validator.validators.VisitorFieldValidator.AppendingValidatorContext}.
      * <p/>
      * Eg. if we have nested Visitor
-     * AddressVisitor nested inside PersonVisitor, when using the normal ${symbol_pound}getFullFieldName, we will get
+     * AddressVisitor nested inside PersonVisitor, when using the normal #getFullFieldName, we will get
      * "address.somefield", we lost the parent, with this wrapper, we will get "person.address.somefield".
      * This is so that the key is used to register errors, so that we don't screw up short-curcuit feature
      * when using nested visitor. See XW-571 (nested visitor validators break short-circuit functionality)
@@ -362,7 +368,7 @@ public class CustomActionValidatorManager implements ActionValidatorManager {
     protected class InternalValidatorContextWrapper {
         private ValidatorContext validatorContext = null;
 
-        InternalValidatorContextWrapper(final ValidatorContext validatorContext) {
+        InternalValidatorContextWrapper(ValidatorContext validatorContext) {
             this.validatorContext = validatorContext;
         }
 
@@ -373,7 +379,7 @@ public class CustomActionValidatorManager implements ActionValidatorManager {
          * @param field The field name
          * @return String
          */
-        public String getFullFieldName(final String field) {
+        public String getFullFieldName(String field) {
             if (validatorContext instanceof VisitorFieldValidator.AppendingValidatorContext) {
                 VisitorFieldValidator.AppendingValidatorContext appendingValidatorContext =
                         (VisitorFieldValidator.AppendingValidatorContext) validatorContext;

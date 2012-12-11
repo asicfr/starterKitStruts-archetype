@@ -1,6 +1,3 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
 package org.telosys.starterkits.strutsjpa;
 
 import java.util.Collection;
