@@ -1,0 +1,104 @@
+/*
+ * Action class 
+ * Created on $today.date ( Time $today.time )
+ */
+
+package ${target.javaPackageFromFolder($project.srcFolder)};
+
+import org.demo.${beanClass.name.toLowerCase()}.bean.${beanClass.name};
+import org.demo.${beanClass.name.toLowerCase()}.service.${beanClass.name}Services;
+import org.telosys.starterkits.strutsjpa.GenericAction;
+import org.telosys.starterkits.strutsjpa.IServices;
+
+#if ( $beanClass.hasCompositePrimaryKey() )
+import org.demo.${beanClass.name.toLowerCase()}.bean.${beanClass.name}Key;
+#set( $keyType = "${beanClass.name}Key" )
+#else 
+#set( $keyType = ${beanClass.keyAttributes.get(0).wrapperType} )
+#end
+
+public class Actions extends GenericAction<${beanClass.name}, ${keyType}>
+{
+	private static final long serialVersionUID = 1L;
+	
+	private IServices<${beanClass.name}, ${keyType}> service = new ${beanClass.name}Services();
+
+	private ${beanClass.name} current = null ;
+	private ${keyType} restid = null;
+	
+	public Actions() {
+		super();
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("=== ACTION CONSTRUCTOR");
+		}
+	}
+
+	/*
+	 * @see org.demo.action.GenericAction#getServices()
+	 */
+	protected IServices<${beanClass.name}, ${keyType}> getServices() {
+		return this.service;
+	}
+	
+	/**
+	 * Get current entity
+	 * @return current entity
+	 */
+	public ${beanClass.name} getCurrent() {
+		if (LOG.isDebugEnabled()) LOG.debug("getCurrent");
+		return this.current;
+	}
+
+	/**
+	 * Set current entity
+	 * @param currentIn entity
+	 */
+	public void setCurrent(final ${beanClass.name} currentIn) {
+		if (LOG.isDebugEnabled()) LOG.debug("setCurrent");
+		this.current = currentIn;
+	}
+
+	/**
+	 * Get restid
+	 * @return restid
+	 */
+	public ${keyType} getRestid() {
+		if (LOG.isDebugEnabled()) LOG.debug("getRestid");
+		return restid;
+	}
+
+	/**
+	 * Set restid
+	 * @param id restid
+	 */
+	public void setRestid(final ${keyType} id) {
+		if (LOG.isDebugEnabled()) LOG.debug("setRestid");
+		this.restid = id;
+	}
+
+	@Override
+	protected ${beanClass.name} getInnerCurrent() {
+		if (LOG.isDebugEnabled()) LOG.debug("getCurrent");
+		return this.current;
+	}
+
+	@Override
+	protected void setInnerCurrent(final ${beanClass.name} currentIn) {
+		if (LOG.isDebugEnabled()) LOG.debug("setCurrent");
+		this.current = currentIn;
+	}
+
+	@Override
+	protected ${keyType} getInnerRestid() {
+		if (LOG.isDebugEnabled()) LOG.debug("getInnerRestid");
+		return this.restid;
+	}
+
+	@Override
+	protected void setInnerRestid(final ${keyType} id) {
+		if (LOG.isDebugEnabled()) LOG.debug("setInnerRestid");
+		this.restid = id;
+	}
+	
+}
+

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE validators PUBLIC
+          "-//Apache Struts//XWork Validator 1.0.2//EN"
+          "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+<validators>
+
+#foreach( $field in $beanClass.attributes )
+
+#if( $field.isKeyElement() )
+  #if ( $beanClass.hasCompositePrimaryKey() )
+    #set( $fieldName = "current.key.${field.name}" )
+  #else
+    #set( $fieldName = "current.${field.name}" )
+  #end
+#else
+  #set( $fieldName = "current.${field.name}" )
+#end
+
+#if( $field.isDatabaseNotNull )
+	<!-- Field not null in database -->
+#if ( $field.jdbcTypeCode == "12" )
+	<field name="${fieldName}" >
+		<field-validator type="requiredstring" >
+			<message key="requiredfield" />
+		</field-validator>
+	</field>
+#elseif ( $field.jdbcTypeCode == "-1" )
+	<field name="${fieldName}}" >
+		<field-validator type="requiredstring" >
+			<message key="requiredfield" />
+		</field-validator>
+	</field>
+#else
+	<field name="${fieldName}" >
+		<field-validator type="required" >
+			<message key="requiredfield" />
+		</field-validator>
+	</field>
+#end
+
+#end
+#end
+
+</validators>
+
+
+

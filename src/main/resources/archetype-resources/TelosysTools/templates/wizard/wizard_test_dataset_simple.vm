@@ -1,0 +1,57 @@
+/*
+ * Dataset class 
+ * Created on $today.date ( Time $today.time )
+ */
+
+package $class.package;
+
+import org.objectweb.telosys.common.TelosysException;
+import org.objectweb.telosys.common.data.DataSet;
+import org.objectweb.telosys.dal.dataset.SQLDataSet;
+
+import testcases.common.Envir;
+
+/**
+ *
+ */
+public class ${class.name}
+{
+    public static void print(DataSet ds)
+    {
+        for ( int i = 1 ; i < ds.getRowCount() ; i++ )
+        {
+            System.out.println(ds.getDataRow(i));
+        }
+        System.out.println("Count : " + ds.getRowCount() + " row(s)");
+    }
+    public static void printSQL(SQLDataSet ds)
+    {
+        System.out.println( ds.getSqlRequest() );
+    }
+
+    public static void main(String[] args)
+    {
+        Envir.init();
+
+        System.out.println("=============================");
+        SQLDataSet ds = ${datasetClass.name}.load(0); // Load from the given DB
+        print(ds);
+        System.out.println("----------");
+        printSQL(ds);
+        
+        
+        System.out.println("=============================");
+        SQLDataSet ds2 = ${datasetClass.name}.getDataSet();
+        try
+        {
+            ds2.load();
+        } catch (TelosysException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        print(ds2);
+        printSQL(ds2);
+
+    }
+}

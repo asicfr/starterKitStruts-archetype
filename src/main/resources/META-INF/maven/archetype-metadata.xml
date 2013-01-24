@@ -37,5 +37,21 @@
         <include>**/*.ftl</include>
       </includes>
     </fileSet>
+    <fileSet encoding="UTF-8">
+      <directory>TelosysTools</directory>
+      <includes>
+        <include>**/*.*</include>
+      </includes>
+    </fileSet>
+    <fileSet encoding="UTF-8">
+        <directory></directory>
+		<includes>
+		<include>**/*.cfg</include>
+		</includes>
+    </fileSet>
+    
   </fileSets>
+  
+  
+  
 </archetype-descriptor>

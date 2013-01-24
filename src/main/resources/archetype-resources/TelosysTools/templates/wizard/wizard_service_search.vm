@@ -1,0 +1,100 @@
+/*
+ *
+ * Created on $today.date ( Time $today.time )
+ *
+ */
+
+package $class.getPackage();
+
+import org.objectweb.telosys.dal.dataset.SQLDataSetDefinition;
+import org.objectweb.telosys.dal.sql.ParamType;
+import org.objectweb.telosys.dal.sql.Criteria;
+import org.objectweb.telosys.dal.sql.Criterion;
+import org.objectweb.telosys.screen.env.ScreenSession;
+import org.objectweb.telosys.service.ServiceRequest;
+import org.objectweb.telosys.service.ServiceResponse;
+import org.objectweb.telosys.service.search.$class.getSuperClass();
+
+/**
+ * Search service
+ *
+ * @author XXX
+ *
+ */
+
+public class $class.getName() extends $class.getSuperClass()
+{
+    private final static String        SQL_SELECT     = "select a, b, c, d, e, f";
+
+    private final static String        SQL_FROM       = "from mytable";
+
+    private final static String        SQL_WHERE      = "where a > 50" ;
+
+    private final static String        SQL_OPTIONS    = "order by 1";
+
+    //--- Define the dynamic criteria 
+    private final static Criterion[] SQL_CRITERIA = 
+		    { 
+        new Criterion("aaa like ?", ParamType.STRING),  /* p1 */
+        new Criterion("bbb like ?", ParamType.STRING),  /* p2 */
+        new Criterion("ccc = ?",    ParamType.INTEGER), /* p3 */
+        new Criterion("ddd = ?",    ParamType.INTEGER)  /* p4 */
+    };
+
+    private final static int        MAX_ROWS   = 10 ;
+
+    public $class.getName()()
+    {
+        SQLDataSetDefinition dsDefinition = new SQLDataSetDefinition(SQL_SELECT, SQL_FROM, SQL_WHERE, SQL_OPTIONS);
+        Criteria criteria = new Criteria(SQL_CRITERIA, "and");
+		
+        //--- Init the Search service
+        init(dsDefinition, criteria);
+		
+        //--- Define the joker replacement ( for criteria values ) 
+        setJoker(); // '*' -> '%' ( REPLACE_ALL )
+		// setJoker(new Joker('*'));
+		// setJoker(new Joker('*', Joker.REPLACE_FIRST));
+		// setJoker(new Joker('*', Joker.REPLACE_LAST));
+		// setJoker(new Joker('*', '%'));
+		// setJoker(new Joker('*', '%', Joker.REPLACE_ALL));
+		
+        //--- Define the maximum number of rows  
+        setMaxRows(MAX_ROWS);
+        //setMessages(new Messages() );
+    }
+
+    public void before(ScreenSession screenSession, ServiceRequest serviceRequest, ServiceResponse serviceResponse)
+    {
+        System.out.println("--- BEFORE SEARCH  ");
+		/*
+        System.out.println("ServiceRequest parameters : ");
+        String[] paramNames = serviceRequest.getParameterNames();
+        for ( int i = 0 ; i < paramNames.length ; i++ )
+        {
+            System.out.println(" . " + paramNames[i] + " = '" + serviceRequest.getParameter(paramNames[i]) + "'" );            
+        }
+		*/
+    }
+    
+    public void after(ScreenSession screenSession, ServiceRequest serviceRequest, ServiceResponse serviceResponse)
+    {
+        System.out.println("--- AFTER SEARCH  ");
+		/*
+        Object oResult = serviceResponse.getResult();
+        if ( oResult != null )
+        {
+            if ( oResult instanceof DataSet )
+            {
+                DataSet ds = (DataSet) oResult ;
+                System.out.println("DataSet : "+ds.getRowCount() + " row(s).");
+            }
+        }
+        else
+        {
+            System.out.println("No Result !");
+        }
+		*/
+    }
+    
+}

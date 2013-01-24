@@ -1,0 +1,174 @@
+/*
+ * Dataset class 
+ * Created on $today.date ( Time $today.time )
+ */
+
+package $class.package;
+
+import org.objectweb.telosys.common.TelosysException;
+import org.objectweb.telosys.common.TelosysRuntimeException;
+import org.objectweb.telosys.dal.dataset.SQLDataSet;
+import org.objectweb.telosys.dal.dataset.SQLDataSetDefinition;
+import org.objectweb.telosys.dal.sql.Criteria;
+import org.objectweb.telosys.dal.sql.Criterion;
+import org.objectweb.telosys.dal.sql.ParamType;
+
+/**
+ * @author ...
+ *
+ */
+public class $class.name
+{
+    //-------------------------------------------------------------------------------------
+    // SQL request 
+    //-------------------------------------------------------------------------------------
+    private static final String SQL_SELECT = "$context.select" ; 
+    private static final String SQL_FROM   = "$context.from" ; 
+    private static final String SQL_WHERE  = "$context.where" ; 
+    private static final String SQL_END    = "$context.option" ; 
+
+    //-------------------------------------------------------------------------------------
+    // Predefined criteria 
+    //-------------------------------------------------------------------------------------
+    
+    private static Criterion SQL_CRITERIA [] = {
+    /*
+            new Criterion ( "nom like ?", ParamType.STRING ),
+            new Criterion ( "matricule > ?", ParamType.INTEGER )
+    */
+    } ;
+    
+    
+    //-------------------------------------------------------------------------------------
+    // Private methods 
+    //-------------------------------------------------------------------------------------
+    /**
+     * Internal DataSet factory
+     * @param criteria
+     * @return
+     * @throws TelosysException
+     */
+    private static SQLDataSet createDataSet(Criteria criteria) //throws TelosysException
+    {
+        SQLDataSet ds = null ;
+        SQLDataSetDefinition definition = new SQLDataSetDefinition(SQL_SELECT, SQL_FROM, SQL_WHERE, SQL_END);
+        try
+        {
+            if ( criteria != null )
+            {
+                ds = new SQLDataSet(definition, criteria);
+            }
+            else
+            {
+                ds = new SQLDataSet(definition);
+            }
+        } catch (Exception e)
+        {
+            throw new TelosysRuntimeException("Cannot create SQLDataSet", e);
+        }
+        return ds ;
+    }
+    
+    /**
+     * Generic load with/without dynamic criteria, with/without database id
+     * @param criteria
+     * @param oDbId
+     * @return
+     */
+    private static SQLDataSet load(Criteria criteria, Object oDbId)
+    {
+        SQLDataSet ds = null ;
+        try {
+            //--- new DataSet instance with dynamic criteria
+            ds = createDataSet(criteria);
+            if ( oDbId != null )
+            {
+                ds.load( oDbId );
+            }
+            else
+            {
+                ds.load();
+            }
+        }
+        catch ( Exception ex )
+        {
+            throw new TelosysRuntimeException("Cannot load SQLDataSet", ex);
+        }
+        return ds;
+    }
+    
+    //-------------------------------------------------------------------------------------
+    // Public methods 
+    //-------------------------------------------------------------------------------------
+    /**
+     * Creates a new Criteria instance with the predifined list of Criterion
+     * @return
+     */
+    public static Criteria getCriteria() 
+    {        
+        return new Criteria( SQL_CRITERIA, "and" ) ;
+    }
+    
+    /**
+     * Creates a new SQLDataSet instance without dynamic criteria
+     * The DataSet returned is empty
+     * @return
+     */
+    public static SQLDataSet getDataSet() 
+    {        
+        return createDataSet(null) ;
+    }
+
+    /**
+     * Creates a new SQLDataSet instance with dynamic criteria
+     * The DataSet returned is empty
+     * @param criteria
+     * @return
+     */
+    public static SQLDataSet getDataSet(Criteria criteria) 
+    {        
+        return createDataSet(criteria) ;
+    }
+    
+    //-------------------------------------------------------------------------------------
+    /**
+     * Load a Dataset without dynamic criteria, from the default database
+     * @return
+     */
+    public static SQLDataSet load()
+    {
+        return load(null, null);
+    }
+    
+    /**
+     * Load a Dataset without dynamic criteria, from the given database id
+     * @param db
+     * @return
+     */
+    public static SQLDataSet load( int db )
+    {
+        return load(null, new Integer(db));
+    }
+    
+    /**
+     * Load a Dataset with criteria, from the default database
+     * @param criteria
+     * @return
+     */
+    public static SQLDataSet load( Criteria criteria ) 
+    {
+        return load(criteria, null);
+    }
+    
+    /**
+     * Load a Dataset with criteria, from the given database id
+     * @param criteria
+     * @param db
+     * @return
+     */
+    public static SQLDataSet load( Criteria criteria, int db ) 
+    {
+        return load(criteria, new Integer(db));
+    }
+    
+}

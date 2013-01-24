@@ -1,0 +1,150 @@
+/*
+ * Dataset class 
+ * Created on $today.date ( Time $today.time )
+ */
+
+package $class.package;
+
+import org.objectweb.telosys.common.TelosysException;
+import org.objectweb.telosys.common.TelosysRuntimeException;
+import org.objectweb.telosys.dal.dataset.SQLDataSet;
+import org.objectweb.telosys.dal.dataset.SQLDataSetDefinition;
+import org.objectweb.telosys.dal.sql.ParamType;
+
+/**
+ * @author ...
+ *
+ */
+public class $class.name
+{
+    //-------------------------------------------------------------------------------------
+    // SQL request 
+    //-------------------------------------------------------------------------------------
+    private static final String SQL_SELECT = "$context.select" ; 
+    private static final String SQL_FROM   = "$context.from" ; 
+    private static final String SQL_WHERE  = "$context.where" ; 
+    private static final String SQL_END    = "$context.option" ; 
+
+    //-------------------------------------------------------------------------------------
+    // Parameters types 
+    //-------------------------------------------------------------------------------------
+    private static int [] PARAM_TYPES = $context.paramTypes;
+
+    //-------------------------------------------------------------------------------------
+    // Private methods 
+    //-------------------------------------------------------------------------------------
+    /**
+     * Internal DataSet factory
+     * @param criteria
+     * @return
+     * @throws TelosysException
+     */
+    private static SQLDataSet createDataSet(String[] params) //throws TelosysException
+    {
+        System.out.println("createDataSet : " + ( params != null ? params.length : 0 ) + " parameter(s) ");
+        
+        SQLDataSet ds = null ;
+        SQLDataSetDefinition definition = new SQLDataSetDefinition(SQL_SELECT, SQL_FROM, SQL_WHERE, SQL_END, PARAM_TYPES);
+        try
+        {
+            if ( params != null )
+            {
+                ds = new SQLDataSet(definition, params);
+            }
+            else
+            {
+                ds = new SQLDataSet(definition);
+            }
+        } catch (Exception e)
+        {
+            throw new TelosysRuntimeException("Cannot create SQLDataSet", e);
+        }
+        return ds ;
+    }
+    
+    /**
+     * Generic load with/without dynamic criteria, with/without database id
+     * @param criteria
+     * @param oDbId
+     * @return
+     */
+    private static SQLDataSet load(String[] params, Object oDbId)
+    {
+        System.out.println("load : " + ( params != null ? params.length : 0 ) + " parameter(s) ");
+        SQLDataSet ds = null ;
+        try {
+            //--- new DataSet instance with dynamic criteria            
+            ds = createDataSet(params);
+            if ( oDbId != null )
+            {
+                ds.load( oDbId );
+            }
+            else
+            {
+                ds.load();
+            }
+        }
+        catch ( Exception ex )
+        {
+            throw new TelosysRuntimeException("Cannot load SQLDataSet", ex);
+        }
+        return ds;
+    }
+    
+    //-------------------------------------------------------------------------------------
+    // Public methods 
+    //-------------------------------------------------------------------------------------
+    /**
+     * Creates a new SQLDataSet instance with generic parameters values
+     * The DataSet returned is empty ( ready for a 'load' )
+     * @return
+     */
+    public static SQLDataSet getDataSet( String[] params ) 
+    {        
+        return createDataSet(params) ;
+    }
+
+    //-------------------------------------------------------------------------------------
+    /**
+     * Load a Dataset with generic parameters values, from the default database
+     * @param params
+     * @return
+     */
+    public static SQLDataSet load( String[] params ) 
+    {
+        return load(params, null);
+    }
+    
+    //-------------------------------------------------------------------------------------
+    /**
+     * Load a Dataset with generic parameters values, from the given database id
+     * @param params
+     * @param db
+     * @return
+     */
+    public static SQLDataSet load( String[] params, int db ) 
+    {
+        return load(params, new Integer(db));
+    }
+    
+    //-------------------------------------------------------------------------------------
+    // Application specific methods
+    //-------------------------------------------------------------------------------------
+    /**
+     * Load a Dataset with generic parameters values
+     */
+    public static SQLDataSet load($context.paramLoad)
+    {
+        String [] params = {$context.paramsLoad};
+        return load(params, null);
+    }
+    
+    /**
+     * Load a Dataset with generic parameters values, from the given database id
+     */
+    public static SQLDataSet load(${context.paramLoad}, int db )
+    {
+        String [] params = {$context.paramsLoad};
+        return load(params, db);
+    }
+}

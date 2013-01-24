@@ -1,0 +1,159 @@
+/*
+ * Triggers for $screendata.name operations
+ * Created on $today.date ( Time $today.time )
+ */
+
+// triggers.info : $triggers.info 
+// triggers.importDatabaseSession : $triggers.importDatabaseSession 
+ 
+package $class.package;
+
+#if( $triggers.importDatabaseSession )
+import org.objectweb.telosys.dal.dao.DatabaseSession;
+#end
+import org.objectweb.telosys.rpl.ScreenRequest;
+import org.objectweb.telosys.rpl.ScreenResponse;
+import org.objectweb.telosys.screen.core.ScreenContext;
+#if( $triggers.importScreenData )
+import org.objectweb.telosys.screen.core.ScreenData;
+#end
+import org.objectweb.telosys.screen.core.StandardScreenTriggers;
+
+import $screendata.fullName;
+
+/**
+ * Triggers for $screendata.name operations
+ * 
+ * @author xx
+ */
+public class $class.name extends StandardScreenTriggers
+{
+#if ( $triggers.beforeGet )
+    public boolean beforeGet ( ScreenContext context, ScreenRequest request, ScreenResponse response)
+    {
+    	$screendata.name currentData = ($screendata.name) context.getCurrentData() ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.afterGet )
+    public boolean afterGet ( ScreenContext context, ScreenRequest request, ScreenResponse response)
+    {
+    	$screendata.name currentData = ($screendata.name) context.getCurrentData() ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.beforeSet )
+    public boolean beforeSet (ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response)
+    {
+    	$screendata.name dataToSet = ($screendata.name) screenData ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.afterSet )
+    public boolean afterSet (ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response)
+    {
+    	$screendata.name dataToSet = ($screendata.name) screenData ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.beforeClear )
+    public boolean beforeClear (ScreenContext context, ScreenRequest request, ScreenResponse response)
+    {
+    	$screendata.name currentData = ($screendata.name) context.getCurrentData() ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.afterClear )
+    public boolean afterClear (ScreenContext context, ScreenRequest request, ScreenResponse response)
+    {
+    	$screendata.name currentData = ($screendata.name) context.getCurrentData() ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.beforeLoad )
+    public boolean beforeLoad (ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession )
+    {
+    	$screendata.name dataToLoad = ($screendata.name) screenData ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.afterLoad )
+    public boolean afterLoad (ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession )
+    {
+    	$screendata.name dataLoaded = ($screendata.name) screenData ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.beforeSave )
+    public boolean beforeSave (ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession )
+    {
+    	$screendata.name dataToSave = ($screendata.name) screenData ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.afterSave )
+    public boolean afterSave (ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession )
+    {
+    	$screendata.name dataSaved = ($screendata.name) screenData ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.beforeDelete )
+    public boolean beforeDelete (ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession )
+    {
+    	$screendata.name dataToDelete = ($screendata.name) screenData ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.afterDelete )
+    public boolean afterDelete (ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession )
+    {
+    	$screendata.name dataDeleted = ($screendata.name) screenData ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.beforeUpdate )
+    public boolean beforeUpdate (ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession )
+    {
+    	$screendata.name dataToUpdate = ($screendata.name) screenData ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.afterUpdate )
+    public boolean afterUpdate (ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession )
+    {
+    	$screendata.name dataUpdated = ($screendata.name) screenData ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.beforeInsert )
+    public boolean beforeInsert (ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession )
+    {
+    	$screendata.name dataToInsert = ($screendata.name) screenData ;
+		return true ;
+	}
+
+#end
+#if ( $triggers.afterInsert )
+    public boolean afterInsert (ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession )
+    {
+    	$screendata.name dataInserted = ($screendata.name) screenData ;
+		return true ;
+	}
+
+#end
+}

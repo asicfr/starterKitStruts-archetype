@@ -1,0 +1,150 @@
+<%-- Detail screen for ${beanClass.name} entity      --%>
+<%-- Created on $today.date ( Time $today.time )  --%>
+
+
+#set( $deletecall = "" )
+#set( $deleteparameters = "" )
+#set( $urlparameters = "" )
+#if ( $beanClass.hasCompositePrimaryKey() )
+  #foreach( $field in $beanClass.keyAttributes )
+	#if ( $deletecall != "" )
+		#set( $deletecall = "${deletecall}, " )
+	#end
+	#if ( $deleteparameters != "" )
+		#set( $deleteparameters = "${deleteparameters}, " )
+	#end
+	#if ( $urlparameters != "" )
+		#set( $urlparameters = "${urlparameters} + '${AMP}' + " )
+	#end
+	
+	#set( $deletecall = "${deletecall}'<s:property value=${QUOT}${SHARP}attr.current.key.${field.name}${QUOT} />'" )
+	#set( $deleteparameters = "${deleteparameters}${field.name}in" )
+	#set( $urlparameters = "${urlparameters}'restid.${field.name}=' + ${field.name}in" )
+  #end
+#else
+	#set( $deletecall = "'<s:property value=${QUOT}${SHARP}attr.current.${beanClass.keyAttributes.get(0).formatedName(0)}${QUOT} />'" )
+	#set( $deleteparameters = "xxx" )
+	#set( $deleteparameters = "id${beanClass.name.toLowerCase()}" )
+	#set( $urlparameters = "xxx" )
+#end
+
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>${beanClass.name}Store</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="${beanClass.name}">
+<meta name="author" content="asic">
+
+<!-- Le styles -->
+<link href="<s:url value='/static/css/bootstrap.min.css' includeParams='none'/>" rel="stylesheet" />
+<style>
+body {
+	padding-top: 60px;
+	/* 60px to make the container go all the way to the bottom of the topbar */
+}
+</style>
+<link href="<s:url value='/static/css/bootstrap-responsive.min.css' includeParams='none'/>" rel="stylesheet" />
+<link href="<s:url value='/static/css/styles.css' includeParams='none'/>" rel="stylesheet" />
+</head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">${beanClass.name}</a>
+          <input type="button" class="btn btn-info" value="All" 	 onclick="directGet('search')" />
+          <input type="button" class="btn btn-info" value="Back to Welcome Page" 	 onclick="goHome()" />
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      
+		<s:form name="${beanClass.name.toLowerCase()}Form" action="${beanClass.name.toLowerCase()}" cssClass="well">  
+		
+#foreach( $field in $beanClass.attributes )
+	#set( $fieldName = "current.${field.name}" )
+	#if( $field.isKeyElement() && $beanClass.hasCompositePrimaryKey() )
+		#set( $fieldName = "current.key.${field.name}" )
+	#end
+
+	#if ( $field.jdbcTypeCode == "3" )
+			<s:textfield key="${fieldName}" 
+				value="%${LBRACE}getText('my.format.number',${LBRACE}${fieldName}${RBRACE})${RBRACE}" 
+				label="${field.name}"/>
+	#else
+			<s:textfield name="${fieldName}" 
+				label="${field.name}" />
+	#end
+#end
+			
+			<tr>
+			<td colspan="2">
+				<s:actionmessage/>
+				<s:actionerror/>
+				<s:fielderror/>
+			</td>
+			</tr>
+			
+			<tr>
+			<td colspan="2">
+			 	<input type="button" class="btn btn-info" value="Save"   onclick="changeActionAndsubmit('save')"   />
+			 	
+			 	<input type="button" class="btn btn-info" value="Delete" onclick="directDelete(${deletecall})" />
+			 	
+			 	<input type="button" class="btn btn-info" value="Clear"  onclick="directGet('clear')"  />
+			 	<input type="button" class="btn btn-info" value="Search" onclick="changeActionAndsubmit('search')" />
+			 	<input type="button" class="btn btn-info" value="All" 	 onclick="directGet('search')" />
+			</td>
+			</tr>
+			 
+		</s:form>	
+		      
+
+    </div> <!-- /container -->
+
+
+    <script src="<s:url value='/static/javascript/jquery.js' includeParams='none'/>"></script>
+    <script src="<s:url value='/static/javascript/bootstrap.min.js' includeParams='none'/>"></script>
+	<script src="<s:url value='/static/javascript/validation.js' includeParams='none'/>"></script>
+	
+	<script type="text/javascript">
+		
+		var urlBaseWelcome = '<s:url value="/" />';
+		var urlBase = '<s:url action="${beanClass.name.toLowerCase()}" includeParams="none" />';
+		
+		function changeActionAndsubmit(url) {
+			document.${beanClass.name.toLowerCase()}Form.action = urlBase + '/' + url;
+		    document.${beanClass.name.toLowerCase()}Form.submit();
+		}
+
+		function directDelete(${deleteparameters}) {
+#if ( $beanClass.hasCompositePrimaryKey() )
+			document.location = urlBase + '/delete?' + ${urlparameters};
+#else
+			document.location = urlBase + '/delete/' + ${deleteparameters} ;
+#end
+		}
+		
+		function directGet(url) {
+			document.location = urlBase + '/' + url;
+		}
+		
+		function goHome() {
+			document.location = urlBaseWelcome;
+		}
+		
+	</script>
+
+  </body>
+</html>

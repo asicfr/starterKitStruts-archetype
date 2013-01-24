@@ -1,0 +1,96 @@
+/*
+ * Service class 
+ * Created on $today.date ( Time $today.time )
+ */
+
+package ${target.javaPackageFromFolder($project.srcFolder)};
+
+import java.util.List;
+
+import org.demo.${beanClass.name.toLowerCase()}.bean.${beanClass.name};
+import org.demo.${beanClass.name.toLowerCase()}.dao.Jpa${beanClass.name}DAO;
+import org.telosys.starterkits.strutsjpa.EntityManagerHelper;
+import org.telosys.starterkits.strutsjpa.IServices;
+import javax.persistence.PersistenceException;
+
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+#if ( $beanClass.hasCompositePrimaryKey() )
+import org.demo.${beanClass.name.toLowerCase()}.bean.${beanClass.name}Key;
+#set( $keyType = "${beanClass.name}Key" )
+#else
+#set( $keyType = ${beanClass.keyAttributes.get(0).wrapperType} )
+#end
+
+public class ${beanClass.name}Services implements IServices<${beanClass.name}, ${keyType}> {
+
+	protected final Logger LOG = LoggerFactory.getLogger(${beanClass.name}Services.class);
+
+	public ${beanClass.name} load(final ${keyType} id) {
+		if (LOG.isDebugEnabled()) LOG.debug("load");
+		${beanClass.name} ${beanClass.name.toLowerCase()};
+		try {
+			EntityManagerHelper.beginTransaction();
+			Jpa${beanClass.name}DAO ${beanClass.name.toLowerCase()}DAO = new Jpa${beanClass.name}DAO();
+			${beanClass.name.toLowerCase()} = ${beanClass.name.toLowerCase()}DAO.findById(id);
+			EntityManagerHelper.commitAndCloseEntityManager();
+		} catch (PersistenceException ex) {
+			LOG.error("Error", ex);
+			throw ex;
+		} finally {
+			if (EntityManagerHelper.isCloseEntityManager() == false) EntityManagerHelper.rollback();
+		}
+		return ${beanClass.name.toLowerCase()} ;
+	}
+
+	public ${beanClass.name} save(final ${beanClass.name} entity) {
+		if (LOG.isDebugEnabled()) LOG.debug("save");
+		${beanClass.name} entityNew;
+		try {
+			EntityManagerHelper.beginTransaction();
+			Jpa${beanClass.name}DAO ${beanClass.name.toLowerCase()}DAO = new Jpa${beanClass.name}DAO();
+			entityNew = ${beanClass.name.toLowerCase()}DAO.update(entity);
+			EntityManagerHelper.commitAndCloseEntityManager();
+		} catch (PersistenceException ex) {
+			LOG.error("Error", ex);
+			throw ex;
+		} finally {
+			if (EntityManagerHelper.isCloseEntityManager() == false) EntityManagerHelper.rollback();
+		}
+		return entityNew;
+	}
+
+	public void delete(final ${keyType} id) {
+		if (LOG.isDebugEnabled()) LOG.debug("delete");
+		try {
+			EntityManagerHelper.beginTransaction();
+			Jpa${beanClass.name}DAO ${beanClass.name.toLowerCase()}DAO = new Jpa${beanClass.name}DAO();
+			${beanClass.name.toLowerCase()}DAO.delete(id);
+			EntityManagerHelper.commitAndCloseEntityManager();	
+		} catch (PersistenceException ex) {
+			LOG.error("Error", ex);
+			throw ex;
+		} finally {
+			if (EntityManagerHelper.isCloseEntityManager() == false) EntityManagerHelper.rollback();
+		}
+	}
+
+	public List<${beanClass.name}> search(final ${beanClass.name} ${beanClass.name.toLowerCase()}) {
+		if (LOG.isDebugEnabled()) LOG.debug("search");
+		List<${beanClass.name}> liste;
+		try {
+			EntityManagerHelper.beginTransaction();
+			Jpa${beanClass.name}DAO ${beanClass.name.toLowerCase()}DAO = new Jpa${beanClass.name}DAO();
+			liste = ${beanClass.name.toLowerCase()}DAO.search(${beanClass.name.toLowerCase()});
+			EntityManagerHelper.commitAndCloseEntityManager();
+		} catch (PersistenceException ex) {
+			LOG.error("Error", ex);
+			throw ex;
+		} finally {
+			if (EntityManagerHelper.isCloseEntityManager() == false) EntityManagerHelper.rollback();
+		}
+		return liste;
+	}
+
+}

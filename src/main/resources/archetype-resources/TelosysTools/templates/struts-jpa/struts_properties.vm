@@ -1,0 +1,28 @@
+# I18N file for Struts 
+# Created on $today.date ( Time $today.time )
+# Entity : ${beanClass.name}
+
+
+requiredfield=You must enter a value for ${DOLLAR}${LBRACE}getText(fieldName)${RBRACE}
+
+name.entity=${beanClass.name}
+entity.found=${beanClass.name} found.
+entity.not.found=${beanClass.name} not found.
+entity.delete=${beanClass.name} deleted.
+entity.nothing.found=Nothing found.
+entity.nothing.to.save=No data to save
+entity.save=${beanClass.name} saved.
+entity.found.many={0} ${beanClass.name}s found
+entity.found.one=One ${beanClass.name} found
+
+#foreach( $field in $beanClass.attributes )
+current.${field.name}=${field.name}
+#end
+
+#foreach( $field in $beanClass.attributes )
+invalid.fieldvalue.current.${field.name}=Invalid value for ${field.name}
+#end
+
+#foreach( $field in $beanClass.attributes )
+current.${field.name}.valid=You must enter a valid ${field.name} (${field.databaseSize} chars).
+#end

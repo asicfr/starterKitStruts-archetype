@@ -1,0 +1,125 @@
+/*
+ * $screendata.name manager 
+ * Created on $today.date ( Time $today.time )
+ */
+
+package $class.package;
+
+import org.objectweb.telosys.common.TelosysException;
+import org.objectweb.telosys.dal.dao.DatabaseSession;
+import org.objectweb.telosys.rpl.ScreenRequest;
+import org.objectweb.telosys.rpl.ScreenResponse;
+import org.objectweb.telosys.screen.core.ScreenContext;
+import org.objectweb.telosys.screen.core.ScreenData;
+import org.objectweb.telosys.screen.core.StandardScreenDataAccessor;
+
+import $screendata.fullName;
+
+/**
+ * $screendata.name manager ( server-side actions implementation )
+ * @author xx
+ *
+ */
+public class $class.name extends StandardScreenDataAccessor
+{
+
+//    private MyDAO _dao = new MyDAO();
+
+    /**
+     * Default constructor.
+     */
+    public ${class.name}()
+    {
+		super( ${screendata.name}.class ); // Use the default database
+		//super( ${screendata.name}.class, 1 ); // Use the database #1
+		//super( ${screendata.name}.class, NO_DATABASE ); // Do not use any database
+	}
+
+	public void load(ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession) throws TelosysException 
+	{
+    	${screendata.name} data = (${screendata.name}) screenData ;
+    	
+//    	//--- Get the primary key parameter  
+//    	String sMyParameter = request.getParameter("myparameter") ;
+//    	if ( sMyParameter != null )
+//        {
+//    		//--- Load master table
+//    		MyVO vo = new MyVO();
+//    		vo.setPrimaryKey(sMyParameter);
+//    		int iRet = _dao.load(vo, dbSession);
+//    		if ( iRet > 0 ) // if found 
+//    		{
+//    			//--- Populate the Screen Data ...
+//    			data.setXxxxx(vo);
+//    			data.setFound(); // Consider as "found"
+//    			//--- Load other related data if necessary
+//    			// use other VO and DAO
+//    		}
+//    		else
+//    		{
+//    			data.clearElements();
+//    			data.setNotFound(); // Consider as "not found"
+//    		}
+//        }
+    	
+//    	//=== Miscellaneous typical operations
+//		Object obj = "myObject" ;
+//		//--- ScreenContext attributes
+//		context.setAttribute("myattribute", obj);
+//		obj = context.getAttribute("myattribute");
+//		//--- ScreenSession attributes
+//		ScreenSession screenSession = context.getScreenSession();
+//		screenSession.setAttribute("myattribute", obj);
+//		obj = screenSession.getAttribute("myattribute");
+//		//--- ScreenApplication attributes
+//		ScreenApplication screenApp = context.getScreenApplication();
+//		screenApp.setAttribute("myattribute", obj);
+//		obj = screenApp.getAttribute("myattribute");
+//		//--- Set response values
+//		response.setValue("myvalue", "xxx");
+	}
+
+	public void save(ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession) throws TelosysException 
+	{
+    	${screendata.name} data = (${screendata.name}) screenData ;
+//    	//--- SAVE CURRENT BEAN
+//    	MyVO vo = data.getXxxxxx();
+//    	if ( vo != null )
+//    	{
+//    		_dao.save(vo, dbSession);            
+//    	}
+
+	}
+
+	public void insert(ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession) throws TelosysException 
+	{
+    	${screendata.name} data = (${screendata.name}) screenData ;
+	}
+
+	public void update(ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession) throws TelosysException 
+	{
+    	${screendata.name} data = (${screendata.name}) screenData ;
+	}
+
+	public void delete(ScreenData screenData, ScreenContext context, ScreenRequest request, ScreenResponse response, DatabaseSession dbSession) throws TelosysException 
+	{
+    	${screendata.name} data = (${screendata.name}) screenData ;
+//    	//--- DELETE the given primary key parameter  
+//    	String sMyParameter = request.getParameter("myparameter") ;
+//    	if ( sMyParameter != null )
+//        {
+//    		//--- Load master table
+//    		MyVO vo = new MyVO();
+//    		vo.setPrimaryKey(sMyParameter);
+//    		int iRet = _dao.delete(vo, dbSession);    		
+//        }
+//    	else
+//    	{
+//    		// ERROR 
+//    	}
+    	
+//    	//--- DELETE CURRENT
+//    	_dao.delete(data.getXxxxxx(), dbSession);            
+//		data.clearElements(); 
+	}
+}

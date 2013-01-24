@@ -1,0 +1,59 @@
+/*
+ * Screen Context Data class 
+ * Created on $today.date ( Time $today.time )
+ */
+
+package $class.package;
+
+import org.objectweb.telosys.common.TelosysException;
+import org.objectweb.telosys.screen.core.StandardScreenData;
+
+/**
+ * This class defines the Screen Context Data elements 
+ *
+ * @author xx
+ *
+ */
+public class $class.name extends StandardScreenData 
+{
+    private static final long serialVersionUID = 1L;
+
+	//--------------------------------------------------------------
+	// Element(s) name(s)
+	//--------------------------------------------------------------
+	// TODO : Set your elements names here ...
+/**
+	private final static String MY_ELEMENT = "my_element";
+	private final static String MY_ELEMENT_LIST = "my_element_list";
+	private final static String MY_DATA_SET = "my_data_set";
+**/
+	
+    /**
+     * Default constructor.
+     */
+	public ${class.name}() throws TelosysException 
+	{
+		super();
+		// TODO : Insert your elements definition here ...
+/**		
+		defineElement(MY_ELEMENT, MyElementVO.class);
+		defineElement(MY_ELEMENT_LIST, MyElementVOList.class);
+		defineElement(MY_DATA_SET, MyDataSet.class);
+**/		
+	}
+	
+	//--------------------------------------------------------------
+	// Element(s) getter(s)/setter(s)
+	//--------------------------------------------------------------	
+	// TODO : Define your elements getters and setters here ...
+/**
+    public MyElementVO getMyElement()
+    {
+        return (MyElementVO) getElement(MY_ELEMENT); 
+    }
+    public void setMyElement(MyElementVO v)
+    {
+    	setElement(MY_ELEMENT, v);
+    }
+**/
+}

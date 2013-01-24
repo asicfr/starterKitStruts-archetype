@@ -1,0 +1,65 @@
+/*
+ * AJAX RPC Service
+ *
+ * Created on $today.date ( Time $today.time )
+ *
+ */
+
+#if ($class.getPackage() != ""   )
+package $class.getPackage();
+#end
+
+import org.objectweb.telosys.common.TelosysException;
+import org.objectweb.telosys.common.View;
+import org.objectweb.telosys.screen.core.ScreenMessage;
+import org.objectweb.telosys.screen.env.ScreenSession;
+import org.objectweb.telosys.service.ServiceRequest;
+import org.objectweb.telosys.service.ServiceResponse;
+import org.objectweb.telosys.service.StandardScreenService;
+
+
+/**
+ * AJAX RPC Service
+ *
+ * @author xx
+ *
+ */
+public class $class.getName() extends StandardScreenService
+{
+   /* (non-Javadoc)
+    * @see org.objectweb.telosys.service.ScreenService # execute(org.objectweb.telosys.screen.env.ScreenSession, org.objectweb.telosys.service.ServiceRequest, org.objectweb.telosys.service.ServiceResponse)
+    */
+   public View execute(ScreenSession screenSession, ServiceRequest request, ServiceResponse response) throws TelosysException
+   {
+       //--- Get the request parameters by order ( anonymous parameters )
+       String sParam1 = request.getParameter(1); // first parameter
+       String sParam2 = request.getParameter(2); // 2nd parameter
+       double v1 = request.getParamAsDouble(3);  // 3rd parameter
+
+       //--- Get the request parameters by name
+       String s2 = request.getParameter("param_name");
+       double v2 = request.getParamAsDouble("other_name");
+
+       if ( sParam1 == null )
+       {
+           response.addMessage(new ScreenMessage(1, "The first parameter is null")) ;
+       }
+       if ( sParam2 == null )
+       {
+
+           response.addMessage(new ScreenMessage(1, "The second parameter is null"));
+       }
+
+       //--- Do the service operation
+       // INSERT YOU CODE HERE
+
+       //--- Set the response value(s)
+       response.setValue("myValue", 123 );
+
+       //--- Set the service response Code and Message
+       response.setReturnCode(123456);
+       response.setReturnMessage("My message");
+
+       return null ; // AJAX call => no forward to a View
+   }
+}

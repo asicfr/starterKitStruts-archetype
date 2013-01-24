@@ -1,0 +1,63 @@
+/*
+ * Value Object Bean ( WIZAR TEMPLATE )
+ *
+ * Created on $today.date ( Time $today.time )
+ *
+ */
+
+package $class.package;
+
+import java.io.Serializable;
+
+#foreach( $import in $class.imports )
+import $import ;
+#end
+
+public class $class.name implements Serializable
+{
+    private static final long serialVersionUID = 1L;
+
+    //----------------------------------------------------------------------
+    // ATTRIBUTES 
+    //----------------------------------------------------------------------
+#foreach( $field in $class.attributes )
+    private $field.formatedType(10) $field.formatedName(12) #if($field.initialValue)= ${field.initialValue} #end; 
+    
+#end
+  
+    //----------------------------------------------------------------------
+    // CONSTRUCTOR(S)
+    //----------------------------------------------------------------------
+    public ${class.name}()
+    {
+        super();
+    }
+    
+    //----------------------------------------------------------------------
+    // GETTERS & SETTERS
+    //----------------------------------------------------------------------
+#foreach( $field in $class.attributes )
+#if ( $field.databaseName ) 
+#end
+#if ( $field.setter )    public void ${field.setter}( $field.type value )
+    {
+        this.$field.name = value;
+    }
+#end
+#if ( $field.getter )    public $field.type ${field.getter}()
+    {
+        return this.$field.name;
+    }
+#end
+
+#end  
+
+    //----------------------------------------------------------------------
+    // toString METHOD
+    //----------------------------------------------------------------------
+    public String toString()
+    {
+##        return $class.toStringInstruction ;
+$class.toStringMethodCodeLines(8)
+    }
+}

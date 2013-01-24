@@ -1,0 +1,103 @@
+/*
+ * Dataset Test class 
+ * Created on $today.date ( Time $today.time )
+ */
+
+package $class.package;
+
+import org.objectweb.telosys.common.TelosysException;
+import org.objectweb.telosys.common.data.DataSet;
+import org.objectweb.telosys.dal.dataset.SQLDataSet;
+import org.objectweb.telosys.dal.sql.Criteria;
+import org.objectweb.telosys.dal.sql.Criterion;
+
+
+import testcases.common.Envir;
+
+/**
+ *
+ */
+public class ${class.name}
+{
+    public static void print(DataSet ds)
+    {
+        for ( int i = 1 ; i < ds.getRowCount() ; i++ )
+        {
+            System.out.println(ds.getDataRow(i));
+        }
+        System.out.println("Count : " + ds.getRowCount() + " row(s)");
+    }
+    public static void printSQL(SQLDataSet ds)
+    {
+        System.out.println( ds.getSqlRequest() );
+    }
+    public static void print(Criteria crit )
+    {
+        System.out.println(" Criteria dynamic WHERE : " + crit.getDynamicWhere() );
+        System.out.println(" Criteria count : " + crit.getCount() + " ( usefull = " + crit.getUsefulParametersCount() + " )");
+        Criterion [] c = crit.getUsefulCriteria();
+        for ( int i = 0 ; i < c.length ; i++ )
+        {
+            System.out.println(" . " + (i+1) + " -> " + c[i].getParamValueAsString() );
+        }
+    }
+
+    public static void main(String[] args)
+    {
+        Envir.init();
+
+        System.out.println("=============================");
+        SQLDataSet ds = ${datasetClass.name}.load(0); // Load from the given DB
+        print(ds);
+        System.out.println("----------");
+        printSQL(ds);
+        
+        System.out.println("=============================");
+        Criteria crit = ${datasetClass.name}.getCriteria();
+        //crit.doNotUse(1);
+        crit.useWithValue(2, "123");
+        ds = ${datasetClass.name}.load(crit);
+        print(ds);
+        System.out.println("----------");
+        print(crit);
+        printSQL(ds);
+        
+        System.out.println("=============================");
+        // Other criteria ...
+        crit.reset(); // keep the same instance => reset all to "Not Used"
+        crit.useWithValue(1, "Z%");
+        
+        ds = ${datasetClass.name}.load(crit, 0);
+        print(ds);
+        System.out.println("----------");
+        print(crit);
+        printSQL(ds);
+        
+        
+        System.out.println("=============================");
+        SQLDataSet ds2 = ${datasetClass.name}.getDataSet();
+        try
+        {
+            ds2.load();
+        } catch (TelosysException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        print(ds2);
+        printSQL(ds2);
+
+        System.out.println("=============================");
+        SQLDataSet ds3 = ${datasetClass.name}.getDataSet(crit);
+        try
+        {
+            ds3.load();
+        } catch (TelosysException e)
+        {
+            e.printStackTrace();
+        }
+        print(ds3);
+        printSQL(ds3);
+        
+    }
+}

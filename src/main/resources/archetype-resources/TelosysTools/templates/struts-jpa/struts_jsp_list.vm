@@ -1,0 +1,129 @@
+<%-- List screen for ${beanClass.name} entity      --%>
+<%-- Created on $today.date ( Time $today.time )  --%>
+
+#if ( $beanClass.hasCompositePrimaryKey() )
+  #set( $loadparameters = "?" )
+  #foreach( $field in $beanClass.keyAttributes )
+    #set( $loadparameters = "${loadparameters}restid.${field.name}=%${LBRACE}key.${field.name}${RBRACE}$AMP" )
+  #end
+  #set( $loadURL = "/${beanClass.name.toLowerCase()}/load${loadparameters}" )
+#else
+  #set( $loadURL = "/${beanClass.name.toLowerCase()}/load/%${LBRACE}${beanClass.keyAttributes.get(0).formatedName(0)}${RBRACE}" )
+#end
+
+
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>${beanClass.name}Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="${beanClass.name}">
+    <meta name="author" content="asic">
+
+    <!-- Le styles -->
+    <link href="<s:url value='/static/css/bootstrap.min.css' includeParams='none'/>" rel="stylesheet" />
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="<s:url value='/static/css/bootstrap-responsive.min.css' includeParams='none'/>" rel="stylesheet" />
+    <link href="<s:url value='/static/css/styles.css' includeParams='none'/>" rel="stylesheet" />
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">${beanClass.name}s List</a>
+          <input type="button" class="btn btn-info" value="All" 	 onclick="directGet('search')" />
+          <input type="button" class="btn btn-info" value="Back to Welcome Page" 	 onclick="goHome()" />
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+		      
+		<table  class="table table-bordered">
+		<thead>
+			<tr>
+#foreach( $field in $beanClass.attributes )
+				<th><s:property value="getText('current.${field.name}')" /></th> 
+#end
+				<th><a class="btn btn-info" href="<s:url value="/${beanClass.name.toLowerCase()}/clear/" />">new</a></th> 
+			</tr>
+		</thead>
+		<tbody>
+			<s:iterator value="searchResult" >
+				<tr>
+#foreach( $field in $beanClass.attributes )
+
+#if ( $field.jdbcTypeCode == "3" )	#set( $fieldValue   = "%${LBRACE}getText('my.format.number',${LBRACE}${field.name}${RBRACE})${RBRACE}" )
+#else
+	#set( $fieldValue = "${field.name}" )
+	#if( $field.isKeyElement() && $beanClass.hasCompositePrimaryKey() )
+		#set( $fieldValue = "key.${field.name}" )
+	#end
+#end
+				<td><s:property value="${fieldValue}" /></td>
+#end
+
+				<td><a class="btn btn-info" href="<s:url value="${loadURL}" />" >edit</a> </td>
+					
+				</tr> 
+			</s:iterator>
+				<tr>
+					<td colspan="11">
+						<s:actionerror/>
+						<s:actionmessage/>
+						<s:fielderror/>
+					</td>
+				</tr>
+		</tbody>
+		</table>
+		      
+
+    </div> <!-- /container -->
+
+
+    <script src="<s:url value='/static/javascript/jquery.js' includeParams='none'/>" ></script>
+    <script src="<s:url value='/static/javascript/bootstrap.min.js' includeParams='none'/>" ></script>
+	<script src="<s:url value='/static/javascript/validation.js' includeParams='none'/>" ></script>
+	
+	<script type="text/javascript">
+		
+		var urlBaseWelcome = '<s:url value="/" />';
+		var urlBase = '<s:url action="${beanClass.name.toLowerCase()}" includeParams="none" />';
+		
+		function changeActionAndsubmit(url) {
+			document.${beanClass.name.toLowerCase()}Form.action = urlBase + '/' + url;
+		    document.${beanClass.name.toLowerCase()}Form.submit();
+		}
+		
+		function directDelete(id${beanClass.name.toLowerCase()}) {
+			document.location = urlBase + '/delete/' + id${beanClass.name.toLowerCase()};
+		}
+		
+		function directGet(url) {
+			document.location = urlBase + '/' + url;
+		}
+		
+		function goHome() {
+			document.location = urlBaseWelcome;
+		}
+		
+		
+	</script>
+
+  </body>
+</html>
+

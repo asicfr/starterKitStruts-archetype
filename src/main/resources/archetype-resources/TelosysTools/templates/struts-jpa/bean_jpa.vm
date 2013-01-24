@@ -1,0 +1,147 @@
+/*
+ * Dto class 
+ * Created on $today.date ( Time $today.time )
+ */
+## IF COMPOSITE PRIMARY KEY : GENERATE A JAVA CLASS FOR THIS COMPOSITE KEY
+#if ( $beanClass.hasCompositePrimaryKey() )
+// This Bean has a composite Primary Key  
+## $generator.generate($target.entityName ,  "${BEANNAME}Key.java", $target.folder, "bean_jpa_pk.vm"  )
+$generator.generate($target.entityName ,  "${beanClass.name}Key.java", $target.folder, "bean_jpa_pk.vm"  )
+#else 
+// This Bean has a basic Primary Key (not composite) 
+#end
+
+package ${target.javaPackageFromFolder($project.srcFolder)};
+
+import java.io.Serializable;
+
+import javax.persistence.*;
+
+import javax.validation.constraints.* ;
+import org.hibernate.validator.constraints.* ;
+
+#foreach( $import in $beanClass.imports )
+import $import;
+#end
+
+#foreach( $import in $beanClass.importsJpa )
+import $import;
+#end
+
+$beanClass.jpaAnnotations
+public class $beanClass.name implements Serializable
+{
+    private static final long serialVersionUID = 1L;
+
+#if ( $beanClass.hasCompositePrimaryKey() )
+    //----------------------------------------------------------------------
+    // ENTITY PRIMARY KEY ( EMBEDDED IN AN EXTERNAL CLASS )  
+    //----------------------------------------------------------------------
+	@EmbeddedId
+    private ${beanClass.name}Key key;
+
+#else 
+    //----------------------------------------------------------------------
+    // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
+    //----------------------------------------------------------------------
+#foreach( $field in $beanClass.keyAttributes )
+$field.jpaAnnotations(4)
+    private $field.formatedType(10) $field.formatedName(12) #if( $field.hasInitialValue() )= ${field.initialValue} #end;
+#end
+
+#end
+
+    //----------------------------------------------------------------------
+    // ENTITY FIELDS 
+    //----------------------------------------------------------------------    
+#foreach( $field in $beanClass.nonKeyAttributes )
+$field.jpaAnnotations(4)
+    private $field.formatedType(10) $field.formatedName(12) #if($field.hasInitialValue() )= ${field.initialValue} #end;
+#end
+
+    //----------------------------------------------------------------------
+    // ENTITY LINKS ( RELATIONSHIP )
+    //----------------------------------------------------------------------
+#foreach( $link in $beanClass.links )
+$link.jpaAnnotations(4)
+    private $link.formatedType(10) $link.formatedName(12);
+#end
+
+    //----------------------------------------------------------------------
+    // CONSTRUCTOR(S)
+    //----------------------------------------------------------------------
+    public ${beanClass.name}()
+    {
+        super();
+    }
+    
+#if ( $beanClass.hasCompositePrimaryKey() )
+    //----------------------------------------------------------------------
+    // GETTER & SETTER FOR THE COMPOSITE KEY 
+    //----------------------------------------------------------------------
+    
+	public ${beanClass.name}Key getKey() {
+        return key;
+    }
+ 
+    public void setKey(${beanClass.name}Key keyIn) {
+        this.key = keyIn;
+    }
+    
+#else 
+    //----------------------------------------------------------------------
+    // GETTER & SETTER FOR THE KEY FIELD
+    //----------------------------------------------------------------------
+#foreach( $field in $beanClass.keyAttributes )
+#if ( $field.setter )    public void ${field.setter}( $field.type value )
+    {
+        this.$field.name = value;
+    }
+#end
+#if ( $field.getter )    public $field.type ${field.getter}()
+    {
+        return this.$field.name;
+    }
+#end
+#end
+#end
+
+    //----------------------------------------------------------------------
+    // GETTERS & SETTERS FOR FIELDS
+    //----------------------------------------------------------------------
+#foreach( $field in $beanClass.nonKeyAttributes )
+#if ( $field.databaseName )    //--- DATABSE MAPPING : $field.databaseName ( $field.databaseType ) 
+#end
+#if ( $field.setter )    public void ${field.setter}( $field.type value )
+    {
+        this.$field.name = value;
+    }
+#end
+#if ( $field.getter )    public $field.type ${field.getter}()
+    {
+        return this.$field.name;
+    }
+#end
+
+#end  
+
+    
+    //----------------------------------------------------------------------
+    // GETTERS & SETTERS FOR LINKS
+    //----------------------------------------------------------------------
+#foreach( $link in $beanClass.links )
+#if ( $link.setter )    public void ${link.setter}( ${link.linkType} value )
+    {
+        this.${link.javaName} = value;
+    }
+#end
+#if ( $link.getter )    public ${link.linkType} ${link.getter}()
+    {
+        return this.${link.javaName};
+    }
+#end
+
+#end  
+
+
+}

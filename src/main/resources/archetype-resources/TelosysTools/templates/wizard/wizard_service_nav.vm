@@ -1,0 +1,67 @@
+/*
+ * Navigation service
+ *
+ * Created on $today.date ( Time $today.time )
+ *
+ */
+
+package $class.getPackage();
+
+import org.objectweb.telosys.common.ResourceView;
+import org.objectweb.telosys.common.ScreenView;
+import org.objectweb.telosys.common.TelosysException;
+import org.objectweb.telosys.common.View;
+import org.objectweb.telosys.screen.core.ScreenContext;
+import org.objectweb.telosys.screen.core.ScreenData;
+import org.objectweb.telosys.screen.env.ScreenContextManager;
+import org.objectweb.telosys.screen.env.ScreenSession;
+import org.objectweb.telosys.service.ServiceRequest;
+import org.objectweb.telosys.service.ServiceResponse;
+import org.objectweb.telosys.service.StandardScreenService;
+
+
+/**
+ * Navigation service
+ *
+ * @author xx
+ *
+ */
+public class $class.getName() extends StandardScreenService
+{
+   /* (non-Javadoc)
+    * @see org.objectweb.telosys.service.ScreenService # execute(org.objectweb.telosys.screen.env.ScreenSession, org.objectweb.telosys.service.ServiceRequest, org.objectweb.telosys.service.ServiceResponse)
+    */
+   public View execute(ScreenSession screenSession, ServiceRequest request, ServiceResponse response) throws TelosysException
+   {
+       //--- Get the request parameters by order ( anonymous parameters )
+       String sParam1 = request.getParameter(1); // first parameter
+       String sParam2 = request.getParameter(2); // 2nd parameter
+       double v1 = request.getParamAsDouble(3);  // 3rd parameter
+
+       //--- Get the request parameters by name
+       String s2 = request.getParameter("param_name");
+       double v2 = request.getParamAsDouble("other_name");
+
+       //--- Manage the navigation here ...
+       View view = new ResourceView("/dir/page.html"); // The target view ( here a static page )
+       
+       if ( sParam1 == null || sParam2 == null )
+       {
+    	   response.expose("error", "Cannot get parameters" ); // expose an object in the standard "request scope"
+    	   view = new ResourceView("/dir/error_page.jsp"); // target view ( JSP page )
+       }
+       else
+       {
+    	   // Initialize the ScreenContext ( create or reuse ) 
+    	   ScreenContext sc = ScreenContextManager.openScreenContext(screenSession, "MyScreenName", 0);
+    	   
+    	   ScreenData sd = null ; // ScreenData sd = new MyScreenData();
+    	   sc.setCurrentData(sd);
+    	   sc.setAttribute("count", new Integer(12345) );
+    	   view = new ScreenView("MyScreenName", 0); // target view ( Screen Name with its Context ID )
+       }
+
+       //--- NAVIGATION Service => forward to a View
+       return view ; 
+   }
+}

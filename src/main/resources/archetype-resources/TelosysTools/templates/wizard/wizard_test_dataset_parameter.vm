@@ -1,0 +1,60 @@
+/*
+ * Dataset Test class 
+ * Created on $today.date ( Time $today.time )
+ */
+
+package $class.package;
+
+import org.objectweb.telosys.common.data.DataSet;
+import org.objectweb.telosys.dal.dataset.SQLDataSet;
+import org.objectweb.telosys.dal.sql.Criteria;
+import org.objectweb.telosys.dal.sql.Criterion;
+
+import testcases.common.Envir;
+
+/**
+ *
+ */
+public class ${class.name}
+{
+    public static void print(DataSet ds)
+    {
+        for ( int i = 1 ; i < ds.getRowCount() ; i++ )
+        {
+            System.out.println(ds.getDataRow(i));
+        }
+        System.out.println("Count : " + ds.getRowCount() + " row(s)");
+    }
+    public static void printSQL(SQLDataSet ds)
+    {
+        System.out.println( ds.getSqlRequest() );
+    }
+
+    public static void main(String[] args)
+    {
+        Envir.init();
+
+        System.out.println("=============================");
+
+        String [] params = { "5000" };
+        SQLDataSet ds = ${datasetClass.name}.load(params); 
+        print(ds);
+        System.out.println("----------");
+        printSQL(ds);
+        
+        
+        System.out.println("=============================");
+        String [] params2 = { "1000" };
+        ds = ${datasetClass.name}.load(params2, 0); // Load from the given DB
+        print(ds);
+        System.out.println("----------");
+        printSQL(ds);
+        
+        System.out.println("=============================");
+        ds = ${datasetClass.name}.load(1000); // Specific method
+        print(ds);
+        System.out.println("----------");
+        printSQL(ds);
+        
+    }
+}
