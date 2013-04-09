@@ -3,7 +3,7 @@
  * Created on $today.date ( Time $today.time )
  */
 
-package ${target.javaPackageFromFolder($project.srcFolder)};
+package ${target.javaPackageFromFolder(${SRC})};
 
 import org.demo.${beanClass.name.toLowerCase()}.bean.${beanClass.name};
 import org.demo.${beanClass.name.toLowerCase()}.service.${beanClass.name}Services;

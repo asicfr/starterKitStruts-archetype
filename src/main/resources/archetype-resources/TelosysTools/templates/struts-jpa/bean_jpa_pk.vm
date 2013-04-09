@@ -3,7 +3,7 @@
  * Created on $today.date ( Time $today.time )
  */
 
-package ${target.javaPackageFromFolder($project.srcFolder)};
+package ${target.javaPackageFromFolder(${SRC})};
 
 import java.io.Serializable;
 

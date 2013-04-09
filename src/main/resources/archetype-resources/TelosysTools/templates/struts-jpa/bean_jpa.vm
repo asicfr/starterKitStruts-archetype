@@ -11,7 +11,7 @@ $generator.generate($target.entityName ,  "${beanClass.name}Key.java", $target.f
 // This Bean has a basic Primary Key (not composite) 
 #end
 
-package ${target.javaPackageFromFolder($project.srcFolder)};
+package ${target.javaPackageFromFolder(${SRC})};
 
 import java.io.Serializable;
 

@@ -16,7 +16,7 @@
   #set( $fieldName = "current.${field.name}" )
 #end
 
-#if( $field.isDatabaseNotNull )
+#if( $field.isDatabaseNotNull() )
 	<!-- Field not null in database -->
 #if ( $field.jdbcTypeCode == "12" )
 	<field name="${fieldName}" >
